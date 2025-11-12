@@ -93,10 +93,10 @@ public class MorphedMesh extends FastMesh implements ResPart {
 	    for(int i = 0; i < from.bufs.length; i++) {
 		if(from.bufs[i] instanceof VertexArray) {
 		    ret[i] = ((VertexArray)from.bufs[i]).dup();
-		    ret[i].vbomode(javax.media.opengl.GL.GL_DYNAMIC_DRAW);
+		    ret[i].vbomode(com.jogamp.opengl.GL.GL_DYNAMIC_DRAW);
 		} else if(from.bufs[i] instanceof NormalArray) {
 		    ret[i] = ((NormalArray)from.bufs[i]).dup();
-		    ret[i].vbomode(javax.media.opengl.GL.GL_DYNAMIC_DRAW);
+		    ret[i].vbomode(com.jogamp.opengl.GL.GL_DYNAMIC_DRAW);
 		} else if(from.bufs[i] instanceof PoseMorph.BoneArray) {
 		    ret[i] = ((PoseMorph.BoneArray)from.bufs[i]).dup();
 		} else {

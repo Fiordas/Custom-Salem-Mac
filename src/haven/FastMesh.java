@@ -27,7 +27,7 @@
 package haven;
 
 import java.nio.*;
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 
 public class FastMesh implements FRendered, Disposable {
     public static final GLState.Slot<GLState> vstate = new GLState.Slot<GLState>(GLState.Slot.Type.SYS, GLState.class);

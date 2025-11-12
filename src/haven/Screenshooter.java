@@ -409,7 +409,7 @@ public class Screenshooter extends Window {
 		gameui.map.delay2(new MapView.Delayed() {
 			public void run(GOut g) {
 			    ss[0] = new TexI(g.getimage(Coord.z, g.sz));
-			    ss[0].minfilter = javax.media.opengl.GL.GL_LINEAR;
+			    ss[0].minfilter = com.jogamp.opengl.GL.GL_LINEAR;
 			    checkcomplete(g);
 			}
 		    });

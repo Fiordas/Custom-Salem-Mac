@@ -33,7 +33,7 @@ import static haven.glsl.Cons.*;
 import haven.Resource.Tile;
 import haven.MapMesh.Surface;
 import haven.MapMesh.Scan;
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 import java.awt.Color;
 
 public class WaterTile extends Tiler {

@@ -7,7 +7,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import haven.States.ColState;
 
-import javax.media.opengl.GL2;
+import com.jogamp.opengl.GL2;
 import java.awt.*;
 import java.io.IOException;
 

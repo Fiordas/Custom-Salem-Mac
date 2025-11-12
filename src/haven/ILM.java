@@ -28,7 +28,7 @@ package haven;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import javax.media.opengl.GL;
+import com.jogamp.opengl.GL;
 
 public class ILM extends TexRT {
     public final static BufferedImage ljusboll;

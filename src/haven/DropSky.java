@@ -27,7 +27,7 @@
 package haven;
 
 import haven.glsl.*;
-import javax.media.opengl.*;
+import com.jogamp.opengl.*;
 import static haven.glsl.Cons.*;
 
 public class DropSky implements Rendered {

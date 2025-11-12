@@ -33,8 +33,8 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import java.util.*;
-import javax.media.opengl.*;
-import javax.media.opengl.awt.*;
+import com.jogamp.opengl.*;
+import com.jogamp.opengl.awt.*;
 
 public class HavenPanel extends GLCanvas implements Runnable, Console.Directory {
     UI ui;
@@ -69,7 +69,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
     }
 
     public HavenPanel(int w, int h, GLCapabilitiesChooser cc) {
-	super(stdcaps(), cc, null, null);
+	super(stdcaps(), cc, null);
 	setSize(this.w = w, this.h = h);
 	newui(null);
 	initgl();

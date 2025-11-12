@@ -39,7 +39,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.media.opengl.GL;
+import com.jogamp.opengl.GL;
 public class MapView extends PView implements DTarget, Console.Directory {
     public static final String DEFCAM = "sortho";
     private final R2DWdg r2dwdg;
