@@ -54,6 +54,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
     private Plob placing = null;
     private int[] visol = new int[32];
     private Grabber grab;
+		private GLFrameBuffer pickbuf = null;
+    private Coord pickbufsz = null;
     public static final Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
 
     {
@@ -787,6 +789,21 @@ public class MapView extends PView implements DTarget, Console.Directory {
     }
 
     private final RenderContext clickctx = new RenderContext();
+    
+    private GLFrameBuffer getPickBuffer(GOut g) {
+	if(pickbuf != null && !sz.equals(pickbufsz)) {
+	    pickbuf.dispose();
+	    pickbuf = null;
+	}
+	if(pickbuf == null) {
+	    TexE color = new TexE(sz, 0x1908, 0x1908, 0x1401);
+	    TexE depth = new TexE(sz, 0x1902, 0x1902, 0x1405);
+	    pickbuf = new GLFrameBuffer(color, depth);
+	    pickbufsz = new Coord(sz);
+	}
+	return pickbuf;
+    }
+    
     private GLState.Buffer clickbasic(GOut g) {
 	GLState.Buffer ret = basic(g);
 	clickctx.prep(ret);
@@ -1278,11 +1295,14 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    GLState.Buffer bk = g.st.copy();
 	    Coord mc;
 	    try {
-		GL gl = g.gl;
-		g.st.set(clickbasic(g));
-		g.apply();
-		gl.glClear(GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT);
-		mc = checkmapclick(g, pc);
+		GLFrameBuffer pickfb = getPickBuffer(g);
+		GLState.Buffer pbuf = g.basicstate();
+		pickfb.prep(pbuf);
+		GOut pg = new GOut(g.gl, g.ctx, g.gc, g.st, pbuf, pickfb.sz());
+		pg.st.set(clickbasic(pg));
+		pg.apply();
+		pg.gl.glClear(GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT);
+		mc = checkmapclick(pg, pc);
 	    } finally {
 		g.st.set(bk);
 	    }
@@ -1308,16 +1328,19 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    Coord mapcl;
 	    ClickInfo gobcl;
 	    try {
-		GL gl = g.gl;
-		g.st.set(clickbasic(g));
-		g.apply();
-		gl.glClear(GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT);
-		mapcl = checkmapclick(g, clickc);
-		g.st.set(bk);
-		g.st.set(clickbasic(g));
-		g.apply();
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-		gobcl = checkgobclick(g, clickc);
+		GLFrameBuffer pickfb = getPickBuffer(g);
+		GLState.Buffer pbuf = g.basicstate();
+		pickfb.prep(pbuf);
+		GOut pg = new GOut(g.gl, g.ctx, g.gc, g.st, pbuf, pickfb.sz());
+		pg.st.set(clickbasic(pg));
+		pg.apply();
+		pg.gl.glClear(GL.GL_DEPTH_BUFFER_BIT | GL.GL_COLOR_BUFFER_BIT);
+		mapcl = checkmapclick(pg, clickc);
+		pg.st.set(bk);
+		pg.st.set(clickbasic(pg));
+		pg.apply();
+		pg.gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+		gobcl = checkgobclick(pg, clickc);
 	    } finally {
 		g.st.set(bk);
 	    }
