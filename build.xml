@@ -101,7 +101,7 @@
 			<fileset file="etc/item_data.json" />
 			<manifest>
 				<attribute name="Main-Class" value="haven.MainFrame" />
-				<attribute name="Class-Path" value="jogl-all.jar gluegen-rt.jar lclient-res.jar builtin-res.jar salem-res.jar gson-2.3.jar guava-18.0.jar" />
+				<attribute name="Class-Path" value="jogl-all.jar gluegen-rt.jar lclient-res.jar builtin-res.jar salem-res.jar gson-2.3.jar guava-18.0.jar gluegen-rt-natives-macosx-universal.jar jogl-all-natives-macosx-universal.jar" />
 			</manifest>
 		</jar>
 		<chmod file="build/lsalem.jar" perm="a+x" />
@@ -119,6 +119,12 @@
 				<include name="gluegen-rt.jar" />
 				<include name="salem-res.jar" />
 				<include name="builtin-res.jar" />
+			</fileset>
+		</copy>
+		<copy todir="build">
+			<fileset dir="lib/jogl-natives">
+				<include name="gluegen-rt-natives-macosx-universal.jar" />
+				<include name="jogl-all-natives-macosx-universal.jar" />
 			</fileset>
 		</copy>
 	</target>
