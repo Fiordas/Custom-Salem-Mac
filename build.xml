@@ -131,6 +131,40 @@
 
 	<target name="deftgt" depends="jars, appletview" />
 
+	<target name="standalone" depends="salem-client,buildinfo,lib-classes,resources,res-jar">
+		<jar destfile="build/salem-mac.jar" update="true">
+			<!-- Main application classes -->
+			<fileset dir="build/classes"/>
+			<fileset dir="build/classes-lib" />
+			
+			<!-- Configuration files -->
+			<fileset file="changelog.txt" />
+			<fileset file="etc/radar.xml" />
+			<fileset file="etc/timer.wav" />
+			<fileset file="etc/trans.txt" />
+			<fileset file="etc/contents_icons.json" />
+			<fileset file="etc/item_radius.json" />
+			<fileset file="etc/gob_path.json" />
+			<fileset file="etc/item_data.json" />
+			
+			<!-- Unpack and include all library JARs -->
+			<zipfileset src="lib/jogl-all.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
+			<zipfileset src="lib/gluegen-rt.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
+			<zipfileset src="lib/salem-res.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
+			<zipfileset src="lib/builtin-res.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
+			<zipfileset src="build/lclient-res.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
+			
+			<!-- Include macOS native libraries -->
+			<zipfileset src="lib/jogl-natives/gluegen-rt-natives-macosx-universal.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
+			<zipfileset src="lib/jogl-natives/jogl-all-natives-macosx-universal.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
+			
+			<manifest>
+				<attribute name="Main-Class" value="haven.MainFrame" />
+			</manifest>
+		</jar>
+		<chmod file="build/salem-mac.jar" perm="a+x" />
+	</target>
+
 	<target name="run" depends="jars">
 		<java jar="build/lsalem.jar" 
 				dir="build" 
