@@ -46,8 +46,8 @@ import static haven.Utils.getprop;
 public class Config {
     public static String authuser = getprop("haven.authuser", null);
     public static String authserv = getprop("haven.authserv", null);
-    public static String defserv = getprop("haven.defserv", "127.0.0.1");
-    public static URL resurl = geturl("haven.resurl", "");
+    public static String defserv = getprop("haven.defserv", "game.salemthegame.com");
+    public static URL resurl = geturl("haven.resurl", "http://game.salemthegame.com/res/");
     public static URL mapurl = geturl("haven.mapurl", "");
     public static URI cachebase = geturi("haven.cachebase", "");
     public static URL screenurl = geturl("haven.screenurl", "");
