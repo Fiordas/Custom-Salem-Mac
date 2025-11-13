@@ -131,7 +131,7 @@
 
 	<target name="deftgt" depends="jars, appletview" />
 
-	<target name="standalone" depends="salem-client,buildinfo,lib-classes,resources,res-jar">
+	<target name="standalone" depends="salem-client,buildinfo,lib-classes,resources">
 		<jar destfile="build/salem-mac.jar" update="true">
 			<!-- Main application classes -->
 			<fileset dir="build/classes"/>
@@ -147,11 +147,9 @@
 			<fileset file="etc/gob_path.json" />
 			<fileset file="etc/item_data.json" />
 			
-			<!-- Unpack and include all library JARs -->
+			<!-- Unpack and include library JARs (excluding large resource files) -->
 			<zipfileset src="lib/jogl-all.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
 			<zipfileset src="lib/gluegen-rt.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
-			<zipfileset src="lib/salem-res.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
-			<zipfileset src="lib/builtin-res.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
 			<zipfileset src="build/lclient-res.jar" excludes="META-INF/*.SF,META-INF/*.DSA,META-INF/*.RSA" />
 			
 			<!-- Include macOS native libraries -->
