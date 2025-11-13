@@ -54,6 +54,70 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
     private GLState.Applier state = null;
     private GLConfig glconf = null;
     
+    // DPI scaling detection and correction
+    private double dpiScaleX = 1.0;
+    private double dpiScaleY = 1.0;
+    private boolean dpiInitialized = false;
+    
+    private void initializeDPIScale() {
+        if (dpiInitialized) return;
+        
+        try {
+            java.awt.GraphicsEnvironment env = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+            java.awt.GraphicsDevice device = env.getDefaultScreenDevice();
+            java.awt.GraphicsConfiguration config = device.getDefaultConfiguration();
+            java.awt.geom.AffineTransform transform = config.getDefaultTransform();
+            
+            dpiScaleX = transform.getScaleX();
+            dpiScaleY = transform.getScaleY();
+            
+        } catch (Exception e) {
+            dpiScaleX = dpiScaleY = 1.0;
+        }
+        
+        dpiInitialized = true;
+    }
+    
+    private boolean needsCoordinateCorrection = true;
+    
+    private Coord correctMouseCoords(Coord original) {
+        // Check if coordinate correction is enabled via system property
+        String correctionEnabled = System.getProperty("salem.mouse.correction", "true");
+        if (!"true".equals(correctionEnabled)) {
+            return original;
+        }
+        
+        if (!dpiInitialized) {
+            initializeDPIScale();
+        }
+        
+        // Get the actual OpenGL drawable size vs component size
+        int componentWidth = getWidth();
+        int componentHeight = getHeight();
+        
+        // Only apply correction if there's a significant size mismatch
+        if (componentWidth > 0 && componentHeight > 0 && (componentWidth != w || componentHeight != h)) {
+            double scaleX = (double) w / componentWidth;
+            double scaleY = (double) h / componentHeight;
+            
+            // Only apply correction if the scale is significant (> 1.5x)
+            if (scaleX > 1.5 || scaleY > 1.5) {
+                int correctedX = (int) Math.round(original.x * scaleX);
+                int correctedY = (int) Math.round(original.y * scaleY);
+                
+                // Clamp to canvas bounds
+                correctedX = Math.max(0, Math.min(correctedX, w - 1));
+                correctedY = Math.max(0, Math.min(correctedY, h - 1));
+                
+                return new Coord(correctedX, correctedY);
+            }
+        }
+        
+        return original;
+    }
+    
+
+    
     private static GLCapabilities stdcaps() {
         GLProfile prof = GLProfile.getDefault();
 	GLCapabilities cap = new GLCapabilities(prof);
@@ -73,6 +137,7 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
 	setSize(this.w = w, this.h = h);
 	newui(null);
 	initgl();
+	initializeDPIScale(); // Initialize DPI detection early
 	if(Toolkit.getDefaultToolkit().getMaximumCursorColors() >= 256)
 	    cursmode = "awt";
 	setCursor(Toolkit.getDefaultToolkit().createCustomCursor(TexI.mkbuf(new Coord(1, 1)), new java.awt.Point(), ""));
@@ -387,15 +452,18 @@ public class HavenPanel extends GLCanvas implements Runnable, Console.Directory 
 	    while((e = events.poll()) != null) {
 		if(e instanceof MouseEvent) {
 		    MouseEvent me = (MouseEvent)e;
+		    Coord originalCoord = new Coord(me.getX(), me.getY());
+		    Coord correctedCoord = correctMouseCoords(originalCoord);
+		    
 		    if(me.getID() == MouseEvent.MOUSE_PRESSED) {
-			ui.mousedown(me, new Coord(me.getX(), me.getY()), me.getButton());
+			ui.mousedown(me, correctedCoord, me.getButton());
 		    } else if(me.getID() == MouseEvent.MOUSE_RELEASED) {
-			ui.mouseup(me, new Coord(me.getX(), me.getY()), me.getButton());
+			ui.mouseup(me, correctedCoord, me.getButton());
 		    } else if(me.getID() == MouseEvent.MOUSE_MOVED || me.getID() == MouseEvent.MOUSE_DRAGGED) {
-			mousepos = new Coord(me.getX(), me.getY());
+			mousepos = correctedCoord;
 			ui.mousemove(me, mousepos);
 		    } else if(me instanceof MouseWheelEvent) {
-			ui.mousewheel(me, new Coord(me.getX(), me.getY()), ((MouseWheelEvent)me).getWheelRotation());
+			ui.mousewheel(me, correctedCoord, ((MouseWheelEvent)me).getWheelRotation());
 		    }
 		} else if(e instanceof KeyEvent) {
 		    KeyEvent ke = (KeyEvent)e;
