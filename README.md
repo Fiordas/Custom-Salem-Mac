@@ -2,6 +2,8 @@
 
 This is a custom client for the Salem game, optimized to run on macOS with Apple Silicon (M1, M2, M3, etc.).
 
+Based on [Latikai's Custom client](https://github.com/DonnEssime/Custom-Salem), which is based on [Ender's](https://github.com/EnderWiggin/Custom-Salem).
+
 **Official Salem website:** [salemthegame.com](https://www.salemthegame.com)
 
 ## Download and Installation
