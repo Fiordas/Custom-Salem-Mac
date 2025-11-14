@@ -114,6 +114,15 @@ public abstract class Sprite implements Rendered {
     }
 
     public static Sprite create(Owner owner, Resource res, Message sdt) {
+	// JOGL compatibility: Disable ISmoke particle effect (uses incompatible javax.media.opengl API)
+	if(res.name.equals("gfx/fx/ismoke")) {
+	    return new Sprite(owner, res) {
+		public boolean setup(RenderList rl) {
+		    return false;  // Disable smoke rendering
+		}
+	    };
+	}
+	
 	{
 	    Factory f = res.getcode(Factory.class, false);
 	    if(f != null)
